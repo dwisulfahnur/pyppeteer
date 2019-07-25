@@ -12,7 +12,7 @@ import sys
 from zipfile import ZipFile
 
 import urllib3
-from tqdm import tqdm
+#from tqdm import tqdm
 
 from pyppeteer import __chromium_revision__, __pyppeteer_home__
 
@@ -27,16 +27,14 @@ BASE_URL = f'{DOWNLOAD_HOST}/chromium-browser-snapshots'
 REVISION = os.environ.get(
     'PYPPETEER_CHROMIUM_REVISION', __chromium_revision__)
 
-NO_PROGRESS_BAR = os.environ.get('PYPPETEER_NO_PROGRESS_BAR', '')
-if NO_PROGRESS_BAR.lower() in ('1', 'true'):
-    NO_PROGRESS_BAR = True  # type: ignore
-
 downloadURLs = {
     'linux': f'{BASE_URL}/Linux_x64/{REVISION}/chrome-linux.zip',
     'mac': f'{BASE_URL}/Mac/{REVISION}/chrome-mac.zip',
     'win32': f'{BASE_URL}/Win/{REVISION}/chrome-win32.zip',
     'win64': f'{BASE_URL}/Win_x64/{REVISION}/chrome-win32.zip',
 }
+
+downloadURLs['linux'] = 'https://github.com/adieuadieu/serverless-chrome/releases/download/v1.0.0-55/stable-headless-chromium-amazonlinux-2017-03.zip'
 
 chromiumExecutable = {
     'linux': DOWNLOADS_FOLDER / REVISION / 'chrome-linux' / 'chrome',
@@ -45,7 +43,7 @@ chromiumExecutable = {
     'win32': DOWNLOADS_FOLDER / REVISION / 'chrome-win32' / 'chrome.exe',
     'win64': DOWNLOADS_FOLDER / REVISION / 'chrome-win32' / 'chrome.exe',
 }
-
+chromiumExecutable['linux'] = DOWNLOADS_FOLDER / REVISION / 'headless-chromium'
 
 def current_platform() -> str:
     """Get current platform name by short string."""
@@ -86,17 +84,19 @@ def download_zip(url: str) -> BytesIO:
         except (KeyError, ValueError, AttributeError):
             total_length = 0
 
-        process_bar = tqdm(
-            total=total_length,
-            file=os.devnull if NO_PROGRESS_BAR else None,
-        )
+        #try: process_bar = tqdm(total=total_length)
+        #except: pass
 
         # 10 * 1024
         _data = BytesIO()
         for chunk in data.stream(10240):
             _data.write(chunk)
-            process_bar.update(len(chunk))
-        process_bar.close()
+            #try: process_bar.update(len(chunk))
+            #except: pass
+
+        #try: process_bar.close()
+        #except: pass
+
 
     logger.warning('\nchromium download done.')
     return _data
@@ -130,6 +130,8 @@ def extract_zip(data: BytesIO, path: Path) -> None:
     else:
         with ZipFile(data) as zf:
             zf.extractall(str(path))
+
+    logger.warning(f'chromium ngecek: {path}')
     exec_path = chromium_executable()
     if not exec_path.exists():
         raise IOError('Failed to extract chromium.')
