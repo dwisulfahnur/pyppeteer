@@ -45,7 +45,7 @@ requirements = [
     'pyee<6',
     'websockets',
     'appdirs',
-    'urllib3<1.25',
+    'urllib3',
     'tqdm'
 ]
 
