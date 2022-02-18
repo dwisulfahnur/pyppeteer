@@ -16,6 +16,7 @@ from unittest import mock
 
 from syncer import sync
 import websockets
+import websockets.client
 
 from pyppeteer import connect, launch, executablePath, defaultArgs
 from pyppeteer.chromium_downloader import chromium_executable, current_platform
