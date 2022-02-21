@@ -34,7 +34,7 @@ downloadURLs = {
     'win64': f'{BASE_URL}/Win_x64/{REVISION}/chrome-win32.zip',
 }
 
-downloadURLs['linux'] = 'https://github.com/adieuadieu/serverless-chrome/releases/download/v1.0.0-55/stable-headless-chromium-amazonlinux-2017-03.zip'
+downloadURLs['linux'] = 'https://github.com/adieuadieu/serverless-chrome/raw/v1.0.0-70/packages/lambda/chrome/headless-chromium-64.0.3242.2-amazonlinux-2017-03.zip'
 
 chromiumExecutable = {
     'linux': DOWNLOADS_FOLDER / REVISION / 'chrome-linux' / 'chrome',
